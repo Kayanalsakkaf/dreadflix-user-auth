@@ -1,43 +1,40 @@
-module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("users", {
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema(
+  {
     username: {
-      type: Sequelize.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
     email: {
-      type: Sequelize.STRING,
+      type: String,
       unique: true,
+      required: true,
       validate: {
-        isEmail: true, // Ensures the value is a valid email address
+        validator: function (value) {
+          return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
+        },
+        message: "Invalid email format.",
       },
     },
     password: {
-      type: Sequelize.STRING,
-    },
-    createdAt: {
-      type: Sequelize.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW, // Automatically set on creation
-    },
-    updatedAt: {
-      type: Sequelize.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW, // Automatically update on save
+      type: String,
+      required: true,
     },
     roles: {
-      //Values are: user,admin
-      type: Sequelize.JSON,
-      allowNull: true, // Can be null if roles are optional
-      defaultValue: ["user"], // Default is an user.
+      type: [String], // Array of strings
+      default: ["user"],
       validate: {
-        isArray(value) {
-          if (!Array.isArray(value)) {
-            throw new Error("Roles must be an array.");
-          }
+        validator: function (value) {
+          return Array.isArray(value);
         },
+        message: "Roles must be an array.",
       },
     },
-  });
+  },
+  {
+    timestamps: true, // Automatically creates `createdAt` & `updatedAt`
+  }
+);
 
-  return User;
-};
+module.exports = mongoose.model("User", userSchema);

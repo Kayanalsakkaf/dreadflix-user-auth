@@ -1,10 +1,11 @@
+const dotenv = require("dotenv");
 const express = require("express");
 const cors = require("cors");
-const app = express(); 
-const dotenv = require("dotenv");
+const app = express();
 const authRoute = require("./routes/auth");
-const userRoute = require("./routes/users"); 
+const userRoute = require("./routes/users");
 const db = require("./models");
+const connectDB = require("./utils/db");
 
 dotenv.config();
 
@@ -16,10 +17,12 @@ app.use(
 );
 
 app.use(express.json());
-db.sequelize.sync({alert: true});
+// Connect to DocumentDB
+connectDB();
+
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log("Backend server is running!");
+app.listen(process.env.PORT || 30082, () => {
+  console.log("Backend server is running! on PORT:" + process.env.PORT);
 });

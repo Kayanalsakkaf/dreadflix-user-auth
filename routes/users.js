@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const verify = require("../verifyToken");
+require("dotenv").config();
 
 //UPDATE
 router.put("/:id", verify, async (req, res) => {
@@ -9,7 +10,7 @@ router.put("/:id", verify, async (req, res) => {
     if (req.body.password) {
       req.body.password = CryptoJS.AES.encrypt(
         req.body.password,
-        process.env.SECRET_KEY
+        process.env.JWT_SECRET_KEY
       ).toString();
     }
 
@@ -92,7 +93,7 @@ router.get("/stats", async (req, res) => {
         },
       },
     ]);
-    res.status(200).json(data)
+    res.status(200).json(data);
   } catch (err) {
     res.status(500).json(err);
   }

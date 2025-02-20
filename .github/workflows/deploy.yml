@@ -24,9 +24,18 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Azure Kubernetes Login
-        run: az aks get-credentials --resource-group DefaultResourceGroup-EUS --name dreadflix
+      - name: Login to Azure using Service Principal
+        run: |
+          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
 
+      - name: Set Azure subscription
+        run: |
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group DefaultResourceGroup-EUS --name dreadflix
+          
       - name: Deploy to AKS
         run: |
           kubectl set image deployment/user-auth-deployment user-auth=userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }}

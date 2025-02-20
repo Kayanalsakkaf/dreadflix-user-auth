@@ -1,0 +1,33 @@
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches:
+      - main  # Run when changes are pushed to main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Login to ACR
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login userauth.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }} .
+          docker push userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Kubernetes Login
+        run: az aks get-credentials --resource-group DefaultResourceGroup-EUS --name dreadflix
+
+      - name: Deploy to AKS
+        run: |
+          kubectl set image deployment/user-auth-deployment user-auth=userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }}
+          kubectl rollout restart deployment/user-auth-deployment

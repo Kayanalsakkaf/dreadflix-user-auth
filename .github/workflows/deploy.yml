@@ -38,5 +38,4 @@ jobs:
           
       - name: Deploy to AKS
         run: |
-          kubectl set image deployment/user-auth-deployment user-auth=userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }}
           kubectl rollout restart deployment/user-auth-deployment

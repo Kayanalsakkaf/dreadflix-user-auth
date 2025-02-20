@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: userauthazurecriosamplesuserauthrepo 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userauthazurecriosamplesuserauthrepo
+  template:
+    metadata:
+      labels:
+        app: userauthazurecriosamplesuserauthrepo 
+    spec:
+      containers:
+        - name: userauthazurecriosamplesuserauthrepo 
+          image: userauth.azurecr.io/userauthazurecriosamplesuserauthrepo
+          ports:
+          - containerPort: 3008

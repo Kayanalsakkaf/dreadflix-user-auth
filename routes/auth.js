@@ -7,7 +7,7 @@ dotenv.config();
 
 //REGISTER
 router.post("/register", async (req, res) => {
-  console.log(req);
+  console.log(req.body);
 
   const newUser = new User({
     username: req.body.username,

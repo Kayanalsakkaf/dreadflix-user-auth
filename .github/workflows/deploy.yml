@@ -18,8 +18,9 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           docker build -t userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }} .
+          docker tag userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }} userauth.azurecr.io/samples/user-auth-repo:latest
           docker push userauth.azurecr.io/samples/user-auth-repo:${{ github.sha }}
-
+          docker push userauth.azurecr.io/samples/user-auth-repo:latest
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest

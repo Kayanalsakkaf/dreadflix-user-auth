@@ -56,4 +56,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  res.status(200).json({ status: "Service Xox" });
+});
+
 module.exports = router;

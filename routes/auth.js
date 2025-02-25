@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  res.status(200).json({ status: "Service running" });
+  res.status(200).json({ status: "Service running 3008!" });
 });
 
 module.exports = router;
